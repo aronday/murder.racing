@@ -7,7 +7,7 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>Top Gear Leaderboard</title>
+        <title>Team MURDER Trials</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
 
