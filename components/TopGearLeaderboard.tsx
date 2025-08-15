@@ -260,13 +260,6 @@ export default function TopGearLeaderboard({ proxyUrl, logoUrl, logoAlt = "Logo"
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-950 to-black text-slate-100 flex items-center justify-center p-6">
       <div className="relative w-full max-w-5xl">
-        {/* shadow + stand to feel freestanding */}
-        <div className="absolute inset-x-12 -bottom-8 h-10 bg-black/60 blur-2xl rounded-full"></div>
-        <div className="absolute left-1/2 -bottom-24 -translate-x-1/2 pointer-events-none select-none">
-          <div className="h-16 w-2 mx-auto rounded-full bg-gradient-to-b from-slate-600 to-slate-900 shadow-[0_0_30px_rgba(0,0,0,0.5)]" />
-          <div className="mt-3 h-4 w-44 mx-auto rounded-md bg-slate-800/90 shadow-2xl border border-slate-700" />
-        </div>
-
         {/* board */}
         <div className="relative overflow-hidden rounded-3xl border border-slate-800 bg-slate-900/50 backdrop-blur shadow-2xl">
           {/* top accent */}
@@ -274,15 +267,12 @@ export default function TopGearLeaderboard({ proxyUrl, logoUrl, logoAlt = "Logo"
 
           {/* header */}
           <div className="px-6 sm:px-8 pt-6">
-            {/* centered top logo */}
-            {logoUrl && (
-              <div className="w-full flex justify-center py-6 sm:py-8">
-                <img src={logoUrl} alt={logoAlt} className="h-14 sm:h-20 w-auto object-contain drop-shadow-[0_1px_6px_rgba(0,0,0,0.35)]" />
-              </div>
-            )}
+            {/* centered top logo */}     
             <div className="flex flex-wrap items-center justify-between gap-4">
               <div className="flex items-center gap-3">
-                {logoUrl ? null : (
+                {logoUrl ? (
+                  <img src={logoUrl} alt={logoAlt} className="h-14 sm:h-16 w-auto object-contain drop-shadow-[0_1px_6px_rgba(0,0,0,0.35)]" />
+                ) : (
                   <span className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-yellow-400 text-slate-900 font-black">TG</span>
                 )}
               </div>
@@ -403,6 +393,7 @@ export default function TopGearLeaderboard({ proxyUrl, logoUrl, logoAlt = "Logo"
               </ul>
             </div>
 
+
             {/* error helper */}
             {error && (
               <div className="mt-4 rounded-xl border border-red-900/50 bg-red-950/30 p-4 text-sm text-red-300">
@@ -468,6 +459,26 @@ export default function TopGearLeaderboard({ proxyUrl, logoUrl, logoAlt = "Logo"
                   </AnimatePresence>
                 </ol>
               </div>
+
+              {/* get involved / join CTA */}
+            <div className="mt-4 rounded-2xl border border-cyan-500/40 bg-cyan-900/20 p-4">
+              <p className="uppercase tracking-widest text-[10px] text-cyan-300">Get Involved</p>
+              <p className="mt-2 text-sm text-cyan-50/90">
+                Want to set a time? Join <span className="font-semibold">Team M.U.R.D.E.R Trials</span> on Garage 61.
+              </p>
+              <a
+                href="https://garage61.net/s/2r6Z7P"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-3 inline-flex items-center gap-2 rounded-lg border border-cyan-500/50 bg-cyan-600/20 px-3 py-1.5 text-sm text-cyan-100 hover:bg-cyan-600/30"
+              >
+                Join on Garage 61
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-4 w-4">
+                  <path d="M5 12h14" />
+                  <path d="M13 5l7 7-7 7" />
+                </svg>
+              </a>
+            </div>
 
               {/* meta */}
               <div className="mt-4 grid grid-cols-3 gap-3 text-xs text-slate-400">
