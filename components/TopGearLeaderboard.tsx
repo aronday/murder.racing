@@ -43,6 +43,7 @@ export default function TopGearLeaderboard({ proxyUrl, logoUrl, logoAlt = "Logo"
     dateTime: "August 10, 2025 • 12:00 PM (Europe/Dublin)",
     weather: "Static • Cloud Cover: Clear • Track Moisture: None • Temp: 20°C • Wind: 3 km/h (N) • Humidity: 0%",
     trackState: "Marbles on track enabled • Practice Starting Track State: 50%",
+    fuel: "Start ≥ 26 L • Lap fuel must remain ≥ 20 L",
   } as const;
 
   // ---- Fetch ----
@@ -118,11 +119,38 @@ export default function TopGearLeaderboard({ proxyUrl, logoUrl, logoAlt = "Logo"
   }
 
   useEffect(() => {
-    // Try normal fetch; if it fails, auto-enable demo so you can see the UI
-    fetchData({ allowDemoFallback: true });
-    const id = setInterval(() => fetchData(), 5 * 60 * 1000);
-    return () => clearInterval(id);
-  }, [proxyUrl]);
+  let timeoutId: ReturnType<typeof setTimeout> | null = null;
+
+  // ms until next wall-clock 10-minute mark (…:00, :10, :20, :30, :40, :50)
+  const msUntilNext10 = () => {
+    const now = new Date();
+    const next = new Date(now);
+    next.setSeconds(0, 0);
+    const mod = now.getMinutes() % 10;
+    const add =
+      mod === 0 && now.getSeconds() === 0 && now.getMilliseconds() === 0
+        ? 10
+        : 10 - mod;
+    next.setMinutes(now.getMinutes() + add);
+    return next.getTime() - now.getTime();
+  };
+
+  const schedule = () => {
+    const delay = msUntilNext10();
+    timeoutId = setTimeout(async () => {
+      await fetchData({ allowDemoFallback: false });
+      schedule(); // keep aligning to each 10-minute mark
+    }, delay);
+  };
+
+  // Initial fetch (with demo fallback), then align to wall-clock marks
+  fetchData({ allowDemoFallback: true });
+  schedule();
+
+  return () => {
+    if (timeoutId) clearTimeout(timeoutId);
+  };
+}, [proxyUrl]);
 
   // ---- Helpers ----
   const pad = (n: number, width = 2) => String(n).padStart(width, "0");
@@ -312,14 +340,13 @@ export default function TopGearLeaderboard({ proxyUrl, logoUrl, logoAlt = "Logo"
             <div className="mt-4 rounded-2xl border border-slate-700/70 bg-gradient-to-b from-slate-900/60 to-slate-950/70 p-4 sm:p-5 shadow-inner">
               <p className="uppercase tracking-widest text-[10px] text-slate-400">Session Details</p>
 
-              <div className="mt-3 grid gap-3 sm:grid-cols-3 text-sm">
+              <div className="mt-3 grid gap-3 sm:grid-cols-4 text-sm">
                 {/* Date & Time */}
                 <div className="rounded-xl ring-1 ring-slate-700/60 bg-slate-900/60 p-3 sm:p-4 shadow">
                   <div className="flex items-center gap-2 text-[11px] uppercase tracking-wide text-slate-400">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-4 w-4"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
                     <span>Date & Time</span>
                   </div>
-                  {/* <div className="mt-1.5 font-medium">{SESSION_DETAILS.dateTime}</div> */}
                   <div className="mt-2 flex flex-wrap gap-2">
                     <span className="inline-flex items-center rounded-md border border-slate-700 bg-slate-800/60 px-2 py-1 text-[11px]">August 10, 2025 • 12:00 PM</span>
                   </div>
@@ -331,12 +358,11 @@ export default function TopGearLeaderboard({ proxyUrl, logoUrl, logoAlt = "Logo"
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-4 w-4 text-yellow-300"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4 12H2M22 12h-2M5 5l-1.5-1.5M19 19l1.5 1.5M5 19l-1.5 1.5M19 5l1.5-1.5"/></svg>
                     <span>Event Weather</span>
                   </div>
-                  {/* <div className="mt-1.5 font-medium">{SESSION_DETAILS.weather}</div> */}
                   <div className="mt-2 flex flex-wrap gap-2">
                     <span className="inline-flex items-center rounded-md border border-slate-700 bg-slate-800/60 px-2 py-1 text-[11px]">Cloud: Clear</span>
                     <span className="inline-flex items-center rounded-md border border-slate-700 bg-slate-800/60 px-2 py-1 text-[11px]">Moisture: None</span>
                     <span className="inline-flex items-center rounded-md border border-slate-700 bg-slate-800/60 px-2 py-1 text-[11px]">Temp: 20°C / 68°F</span>
-                    <span className="inline-flex items-center rounded-md border border-slate-700 bg-slate-800/60 px-2 py-1 text-[11px]">Wind: 3 km/h / 2 mph (N)</span>
+                    <span className="inline-flex items-center rounded-md border border-slate-700 bg-slate-800/60 px-2 py-1 text-[11px]">3 km/h / 2 mph (N)</span>
                     <span className="inline-flex items-center rounded-md border border-slate-700 bg-slate-800/60 px-2 py-1 text-[11px]">Humidity: 0%</span>
                   </div>
                 </div>
@@ -347,12 +373,23 @@ export default function TopGearLeaderboard({ proxyUrl, logoUrl, logoAlt = "Logo"
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-4 w-4"><path d="M3 20c4-8 8-8 18-16"/></svg>
                     <span>Track Conditions</span>
                   </div>
-                  {/* <div className="mt-1.5 font-medium">{SESSION_DETAILS.trackState}</div> */}
                   <div className="mt-2 flex flex-wrap gap-2">
                     <span className="inline-flex items-center rounded-md border border-emerald-700/50 bg-emerald-900/30 text-emerald-200 px-2 py-1 text-[11px]">Marbles: On</span>
                     <span className="inline-flex items-center rounded-md border border-slate-700 bg-slate-800/60 px-2 py-1 text-[11px]">Start state: 50%</span>
                   </div>
                 </div>
+
+                {/* Fuel Requirements */}
+                <div className="rounded-xl ring-1 ring-slate-700/60 bg-slate-900/60 p-3 sm:p-4 shadow">
+                  <div className="flex items-center gap-2 text-[11px] uppercase tracking-wide text-slate-400">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-4 w-4"><path d="M16 3h3a1 1 0 0 1 1 1v7.5a2.5 2.5 0 1 1-5 0V6h-2v13a2 2 0 0 1-2 2H7a4 4 0 0 1-4-4V7a4 4 0 0 1 4-4h9z"/></svg>
+                    <span>Fuel Requirements</span>
+                  </div>
+                  <div className="mt-2 flex flex-wrap gap-2">
+                    <span className="inline-flex items-center rounded-md border border-slate-700 bg-slate-800/60 px-2 py-1 text-[11px]">Start fuel ≥ 26 L</span>
+                    <span className="inline-flex items-center rounded-md border border-slate-700 bg-slate-800/60 px-2 py-1 text-[11px]">End fuel ≥ 20 L</span>
+                  </div>
+            </div>
               </div>
             </div>
 
@@ -361,7 +398,8 @@ export default function TopGearLeaderboard({ proxyUrl, logoUrl, logoAlt = "Logo"
               <p className="uppercase tracking-widest text-[10px] text-amber-300">Eligibility Rules</p>
               <ul className="mt-2 text-sm text-amber-100/90 list-disc pl-5 space-y-1">
                 <li>You must use the <span className="font-semibold">iRacing Fixed Setup</span>.</li>
-                <li>Only laps set under the <span className="font-semibold">session parameters</span> above (date &amp; time, event weather, and track conditions) will count. Laps set outside these parameters will <span className="font-bold">not be accepted</span>.</li>
+                <li>Fuel must meet requirements: <span className="font-semibold">start ≥ 26 L</span> and <span className="font-semibold">must not drop below 20 L</span> for any timed lap.</li>
+                <li>Only laps set under the <span className="font-semibold">session parameters</span> above (date &amp; time, event weather, track conditions, and fuel) will count. Laps set outside these parameters will <span className="font-bold">not be accepted</span>.</li>
               </ul>
             </div>
 
