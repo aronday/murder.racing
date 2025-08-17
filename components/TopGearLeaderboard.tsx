@@ -331,10 +331,10 @@ export default function TopGearLeaderboard({ proxyUrl, logoUrl, logoAlt = "Logo"
               <p className="uppercase tracking-widest text-[10px] text-amber-300">Rules</p>
               <ul className="mt-2 text-sm text-amber-100/90 list-disc pl-5 space-y-1">
                 <li>
-                  <span className="font-semibold">Fixed setup</span> is required (iRacing Fixed Setup).
+                  <span className="font-semibold">Setups:</span> Drivers may use the <span className="font-semibold underline decoration-2">official iRacing track-specific setup</span> if one is provided for the car (for example, the SFL setup). If no track-specific setup exists, you must use the <span className="font-semibold underline decoration-2">Fixed/Baseline setup</span>.
                 </li>
                 <li>
-                  <span className="font-semibold">Only change allowed:</span> fuel amount.
+                  <span className="font-semibold">Changes allowed:</span> Fuel
                 </li>
               </ul>
             </div>
