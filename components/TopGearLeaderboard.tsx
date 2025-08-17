@@ -333,7 +333,7 @@ export default function TopGearLeaderboard({ proxyUrl, logoUrl, logoAlt = "Logo"
                 <li>
                   <span className="font-semibold underline">Setups:</span>{" "}
                   Only iRacing <span className="font-semibold">default</span> setups are allowed. 
-                  If an official track-specific default exists (e.g., SFL), you <span className="font-semibold">must</span> use it. 
+                  If an official track-specific default exists (e.g., SFL), you <span className="font-semibold">may</span> use it. 
                   If not, you <span className="font-semibold">must</span> use the <span className="font-semibold">Fixed/Baseline</span> setup. 
                   <span className="font-semibold"> Custom or modified setups are not permitted.</span>
                 </li>
