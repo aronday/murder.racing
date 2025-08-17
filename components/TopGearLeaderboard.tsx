@@ -333,10 +333,9 @@ export default function TopGearLeaderboard({ proxyUrl, logoUrl, logoAlt = "Logo"
                 <li>
                   <span className="font-semibold underline">Setups:</span>{" "}
                   Only iRacing <span className="font-semibold">default</span> setups are allowed. 
-                  You may use the official <span className="font-semibold">track-specific default</span> for 
-                  <span className="font-semibold"> this week’s car/track combo only</span> (e.g., SFL), if one exists. 
-                  Otherwise, use the <span className="font-semibold">Fixed/Baseline</span> default for this car. 
-                  Setups from other tracks/weeks are <span className="font-semibold">not allowed</span>. 
+                  You may use the official <span className="font-semibold">track-specific setup</span> for 
+                  <span className="font-semibold"> this week’s car/track combo</span> (e.g., SFL), if one exists. 
+                  Otherwise, use the <span className="font-semibold">Fixed/Baseline</span> setup for the car.
                 </li>
                 <li>
                 <span className="font-semibold underline">Fuel:</span>{" "}
